@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}" lang="en">
+<head>
+    <title>Change contacts</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="container main-content">
+        <div class="row">
+
+            <div class="col">
+            </div>
+
+
+            <div class="col-md-5">
+                <h1>Change contacts</h1>
+                <form th:action="@{/api/changeContact}" th:object="${changeContact}" method="post" accept-charset="utf-8">
+
+                    <div th:if="${param.success}">
+                        <div class="alert alert-info">
+                            You've successfully changed your personal contacts!
+                        </div>
+                    </div>
+
+                    <p class="error-message"
+                       th:if="${#fields.hasGlobalErrors()}"
+                       th:each="error : ${#fields.errors('global')}"
+                       th:text="${error}">Validation error</p>
+
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('firstName')}? 'has-error':''">
+                        <label for="firstName" class="control-label">First name</label>
+                        <input id="firstName"
+                               required="required"
+                               class="form-control"
+                               type="text"
+                               th:field="*{firstName}"/>
+                        <p class="error-message"
+                           th:each="error : ${#fields.errors('firstName')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('lastName')}? 'has-error':''">
+                        <label for="lastName" class="control-label">Last name</label>
+                        <input id="lastName"
+                               required="required"
+                               class="form-control"
+                               type="text"
+                               th:field="*{lastName}"/>
+                        <p class="error-message"
+                           th:each="error : ${#fields.errors('lastName')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('email')}? 'has-error':''">
+                        <label for="email" class="control-label">E-mail</label>
+                        <input id="email"
+                               required="required"
+                               class="form-control"
+                               type="email"
+                               th:field="*{email}"/>
+                        <p class="error-message"
+                           th:each="error : ${#fields.errors('email')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('phone')}? 'has-error':''">
+                        <label for="phone" class="control-label">Phone</label>
+                        <input id="phone"
+                               required="required"
+                               class="form-control"
+                               type="text"
+                               th:field="*{phone}"/>
+                        <p class="error-message"
+                           th:each="error : ${#fields.errors('phone')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('birthDate')}? 'has-error':''">
+                        <label for="birthDate" class="control-label">Birth date</label>
+                        <input id="birthDate"
+                               required="required"
+                               class="form-control"
+                               type="date"
+                               th:field="*{birthDate}"/>
+                        <p class="error-message"
+                           th:each="error : ${#fields.errors('birthDate')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('gender')}? 'has-error':''">
+                        <label for="gender" class="control-label">Gender</label>
+                        <select id="gender" required="required" class="form-control" th:field="*{gender}">
+                            <option th:value="'MALE'" th:text="Male"></option>
+                            <option th:value="'FEMALE'" th:text="Female"></option>
+                        </select>
+                        <p class="error-message"
+                           th:each="error : ${#fields.errors('gender')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Change contacts</button>
+                        <span><a href="/api/person" th:href="@{/api/person}">Back to profile</a></span>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="col">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

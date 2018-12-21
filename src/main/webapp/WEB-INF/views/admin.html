@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Person</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container main-content">
+        <h3>Hi Admin, would you like to check list of users, which present in this application?</h3>
+        <a th:href="@{/admin/users}">Users List</a>
+    </div>
+</div>
+</body>
+</html>
