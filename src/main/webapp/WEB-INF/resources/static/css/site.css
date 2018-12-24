@@ -2,6 +2,12 @@
     padding-top: 60px;
 }
 
+.users {
+    font-family: 'Times New Roman', Times, sans-serif; /* Гарнитура текста */
+    font-size: 190%;
+    color: #313131;
+}
+
 .footer{
     position: absolute;
     bottom: auto;

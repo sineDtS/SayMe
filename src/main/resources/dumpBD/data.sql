@@ -14,3 +14,9 @@ INSERT INTO my_schema.user_roles (user_id, role_id) VALUES (1,2);
 INSERT INTO my_schema.user_roles (user_id, role_id) VALUES (2,2);
 
 delete from my_schema.user_roles where id = 3;
+
+INSERT INTO my_schema.friends (user_id, friend_id) VALUES (1,4);
+INSERT INTO my_schema.friends (user_id, friend_id) VALUES (4,1);
+INSERT INTO my_schema.friends (user_id, friend_id) VALUES (1,7);
+INSERT INTO my_schema.friends (user_id, friend_id) VALUES (7,1);
+INSERT INTO my_schema.friends (user_id, friend_id) VALUES (1,2);

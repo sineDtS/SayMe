@@ -26,8 +26,8 @@ public class PersonView implements Serializable {
     private Date birthDate;
     private String gender;
     private Date created;
-    private boolean isMyFriend;
-    private boolean isFriendOfMine;
+    private Boolean isMyFriend;
+    private Boolean isFriendOfMine;
 
     public PersonView(User person) {
         final User profile = SecurityUtils.currentProfile();
@@ -41,7 +41,8 @@ public class PersonView implements Serializable {
         this.birthDate = person.getBirthDate();
         this.gender = person.getGender().toString();
         this.created = person.getCreated();
-        this.isMyFriend = person.isFriendOf(profile);
+        this.isMyFriend =  person.isFriendOf(profile);
         this.isFriendOfMine = person.hasFriend(profile);
+        log.debug(this.fullName + " isMyFriend = " + this.isMyFriend + " and isFriendOfMine = " + this.isFriendOfMine);
     }
 }

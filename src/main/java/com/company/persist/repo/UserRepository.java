@@ -1,6 +1,5 @@
 package com.company.persist.repo;
 
-import com.company.exception.PersistException;
 import com.company.persist.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

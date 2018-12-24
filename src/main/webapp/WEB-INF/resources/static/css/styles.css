@@ -231,11 +231,15 @@ a:hover { text-decoration: underline; }
   padding-bottom: 4px;
 }
 
+#settings {
+  width: 76%;
+}
+
 .setting {
   display: block;
   font-weight: normal;
   padding: 7px 3px;
-  border-top: 1px solid #d6d1af;
+  border-bottom: 1px solid #d6d1af;
   margin-bottom: 5px;
 }
 .setting span {

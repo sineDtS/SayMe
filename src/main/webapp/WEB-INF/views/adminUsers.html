@@ -60,15 +60,16 @@
                     </tbody>
                 </table>
                 <div class="row">
-                    <div class="form-group col-md-1">
-                        <select class="form-control pagination" id="pageSizeSelect">
-                            <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
+                    <div class="form-group mine">
+                        <select class="form-control form-control-lg pagination" id="pageSizeSelect">
+                            <option th:each="pageSize : ${pageSizes}" th:utext="${pageSize}"
                                     th:value="${pageSize}"
                                     th:selected="${pageSize} == ${selectedPageSize}"></option>
                         </select>
                     </div>
+
                     <div th:if="${personList.totalPages != 1}"
-                         class="form-group col-md-11 pagination-centered">
+                         class="form-group col-md-11 col-md-offset-8 pagination-centered">
                         <ul class="pagination">
                             <li th:class="${personList.number == 0} ? disabled"><a
                                     class="pageLink"

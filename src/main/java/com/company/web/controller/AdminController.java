@@ -20,17 +20,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
 
+import static com.company.config.Constants.*;
+
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping(value = URI_ADMIN_PREFIX)
 public class AdminController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
-
-    private static final int BUTTONS_TO_SHOW = 3;
-    private static final int INITIAL_PAGE = 0;
-    private static final int INITIAL_PAGE_SIZE = 5;
-    private static final int[] PAGE_SIZES = {5, 10};
 
     private final UserService userService;
 
@@ -42,6 +39,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView getPeople(@RequestParam("pageSize") Optional<Integer> pageSize,
                                   @RequestParam("page") Optional<Integer> page) {
         ModelAndView modelAndView = new ModelAndView("adminUsers");

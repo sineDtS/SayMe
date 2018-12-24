@@ -2,6 +2,7 @@ import com.company.persist.domain.Gender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class asd {
+    // 123 - psw for michael corleone (user)
     // 123 - psw for илья (user)
     // 123 - psw for евг гаврушов (user)
     // 123 - psw for наташа (user)
@@ -10,7 +11,7 @@ public class asd {
     // 7913782o - psw for den str (admin)
 
     public static void main(String[] args) {
-        String encoded=new BCryptPasswordEncoder(11).encode("111");
+        String encoded=new BCryptPasswordEncoder(11).encode("7913782o");
         System.out.println(encoded);
     }
 }

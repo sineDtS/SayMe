@@ -1,7 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}" lang="en">
 <head>
+    <style>
+        #bio {
+            width: 76%;
+        }
+    </style>
+
     <meta http-equiv="Content-Type" content="text/html">
     <link rel="stylesheet" type="text/css" media="all" href="../resources/static/css/styles.css" th:href="@{/css/styles.css}"/>
     <script type="text/javascript" src="../resources/static/js/jquery-1.10.2.min.js" th:src="@{/js/jquery-1.10.2.min.js}"></script>
@@ -12,39 +17,28 @@
     <div class="container main-content">
         <div id="w">
             <div id="content" class="clearfix">
-                <div id="userphoto"><img src="../resources/static/images/avatar.png" th:src="@{/images/avatar.png}" alt="default avatar"></div>
+                <div id="userphoto">
+                    <img src="../resources/static/images/avatar.png" th:src="@{/images/avatar.png}" alt="default avatar">
+                    <p></p>
+                    <p th:if="${user.isMyFriend and !user.isFriendOfMine}">You are subscribed on him</p>
+                    <div th:switch="true">
+                        <button th:case="${user.isMyFriend and user.isFriendOfMine}" type="submit" class="btn btn-danger btn-sm" >Delete from friends</button>
+                        <button th:case="${user.isMyFriend}" type="submit" class="btn btn-danger btn-sm" >Unsubscribe from him</button>
+                        <button th:case="${user.isFriendOfMine}" type="submit" class="btn btn-secondary btn-sm" >Accept friend offer</button>
+                        <button th:case="${!user.isMyFriend and !user.isFriendOfMine}" type="submit" class="btn btn-primary btn-sm" >Add to friends</button>
+                    </div>
+                </div>
                 <h1>User Profile</h1>
 
                 <nav id="profiletabs">
                     <ul class="clearfix">
                         <li><a href="#bio" class="sel">Bio</a></li>
-                        <li><a href="#users">Users</a></li>
                         <li><a href="#friends">Friends</a></li>
-                        <li><a href="#settings">Settings</a></li>
                     </ul>
                 </nav>
 
                 <section id="bio">
-                    <p th:text="'Hello, my name is ' + ${user.fullName}"></p>
-                </section>
-
-                <section id="users" class="hidden">
-                    <p>In this section you can:</p>
-                    <a class="users" th:href="@{/api/users}">Find users</a>
-                </section>
-
-                <section id="friends" class="hidden">
-                    <p>Friends list:</p>
-
-                    <ul id="friendslist" class="clearfix">
-                        <li><a href="#"><img src="../resources/static/images/avatar.png" width="22" height="22"> Username</a></li>
-                        <li><a href="#"><img src="../resources/static/images/avatar.png" width="22" height="22"> SomeGuy123</a></li>
-                        <li><a href="#"><img src="../resources/static/images/avatar.png" width="22" height="22"> PurpleGiraffe</a></li>
-                    </ul>
-                </section>
-
-                <section id="settings" class="hidden">
-                    <p><img src="../resources/static/images/edit.png" alt="*Edit*">Edit your user settings:</p>
+                    <p class="setting"><span>Name</span> <a th:text="${user.fullName}"></a> </p>
 
                     <p class="setting"><span>E-mail address</span> <a th:text="${user.email}"></a> </p>
 
@@ -53,8 +47,16 @@
                     <p class="setting"><span>Date of birth</span> <a th:text="${user.birthDate != null} ? ${#dates.format(user.birthDate, 'dd-MM-yyyy')} : 'Not added'"></a> </p>
 
                     <p class="setting"><span>Gender</span> <a th:text="${user.gender != null} ? ${user.gender} : 'Not added'"></a> </p>
+                </section>
 
-                    <a class="change" th:href="@{/api/changeContact}">Change contacts</a> <a class="changeDelimiter">or maybe</a> <a class="change" th:href="@{/api/changePassword}">Change password</a>
+                <section id="friends" class="hidden">
+                    <p>Friends list:</p>
+
+                    <ul id="friendslist" class="clearfix">
+                        <li><a href="#"><img src="../../WEB-INF/resources/static/images/avatar.png" width="22" height="22"> Username</a></li>
+                        <li><a href="#"><img src="../../WEB-INF/resources/static/images/avatar.png" width="22" height="22"> SomeGuy123</a></li>
+                        <li><a href="#"><img src="../../WEB-INF/resources/static/images/avatar.png" width="22" height="22"> PurpleGiraffe</a></li>
+                    </ul>
                 </section>
             </div><!-- @end #content -->
         </div><!-- @end #w -->

@@ -1,14 +1,19 @@
 package com.company.service;
 
+import com.company.model.PersonView;
 import com.company.model.UserRegistration;
 import com.company.persist.domain.User;
 import com.company.persist.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,9 +22,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
     @Transactional(readOnly = true)
     public User findById(Long id) {
-        return userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElse(null);
+        if(user != null) {
+            user.getFriends().isEmpty();
+            user.getFriendOf().isEmpty();
+            user.getRoles().isEmpty();
+            return user;
+        }
+        return null;
     }
 
     @Transactional(readOnly = true)
@@ -30,6 +44,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<User> getPeople(Pageable pageRequest) {
         return userRepository.findAll(pageRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PersonView> getModelPeople(Pageable pageRequest) {
+        return userRepository.findAll(pageRequest).map(PersonView::new);
     }
 
     @Transactional(readOnly = true)
