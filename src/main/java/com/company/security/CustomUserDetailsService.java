@@ -1,6 +1,5 @@
 package com.company.security;
 
-import com.company.persist.domain.Role;
 import com.company.persist.domain.User;
 import com.company.persist.repo.UserRepository;
 import org.slf4j.Logger;
@@ -10,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Component
 @Transactional(readOnly=true)

@@ -7,15 +7,18 @@ import lombok.Setter;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
 public class UserRegistration {
 
     @NotEmpty(message="May not be empty")
+    @Size(min = 2, max = 50, message = "Should be between 2 and 50")
     @Getter @Setter
     private String firstName;
 
     @NotEmpty(message="May not be empty")
+    @Size(min = 2, max = 50, message = "Should be between 2 and 50")
     @Getter @Setter
     private String lastName;
 
@@ -29,6 +32,7 @@ public class UserRegistration {
 
     @Email
     @NotEmpty(message="May not be empty")
+    @Size(min = 5, max = 50, message = "Should be between 5 and 50")
     @Getter @Setter
     private String email;
 

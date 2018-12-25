@@ -1,6 +1,5 @@
 package com.company.web.controller;
 
-import com.company.model.PersonView;
 import com.company.model.UserRegistration;
 import com.company.persist.domain.User;
 import com.company.security.CurrentProfile;
@@ -8,7 +7,6 @@ import com.company.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
@@ -34,22 +33,22 @@ public class ProfileController {
     }
 
     @GetMapping(value={"/", "/index"})
-    public String getHomePage(Model model){
+    public String getHomePage(){
         return "index";
     }
 
     @GetMapping(value="/login")
-    public String getLoginPage(Model model){
+    public String getLoginPage(){
         return "login";
     }
 
     @GetMapping(value="/logout-success")
-    public String getLogoutPage(Model model){
+    public String getLogoutPage(){
         return "logout";
     }
 
     @GetMapping(value="/registration")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm() {
         return "register";
     }
 
@@ -70,8 +69,7 @@ public class ProfileController {
     }
 
     @GetMapping(value={"/403"})
-    public String getAccessDeniedPage(@CurrentProfile User profile, Model model){
-        model.addAttribute("profile", profile);
-        return "403";
+    public ModelAndView getAccessDeniedPage(@CurrentProfile User profile){
+        return new ModelAndView("403", "profile", profile);
     }
 }

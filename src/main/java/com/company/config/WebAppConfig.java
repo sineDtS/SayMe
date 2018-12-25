@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -25,7 +24,6 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 @Configuration
@@ -102,4 +100,5 @@ public class WebAppConfig implements WebMvcConfigurer, ApplicationContextAware {
         s.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return s;
     }
+
 }

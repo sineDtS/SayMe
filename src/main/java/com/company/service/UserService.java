@@ -66,6 +66,7 @@ public class UserService {
         if (!person.hasFriend(friend)) {
             person.addFriend(friend);
         }
+        userRepository.save(person);
     }
 
     @Transactional
@@ -73,6 +74,7 @@ public class UserService {
         if (person.hasFriend(friend)) {
             person.removeFriend(friend);
         }
+        userRepository.save(person);
     }
 
     @Transactional

@@ -15,14 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.company.config.Constants.*;
 
@@ -47,17 +46,16 @@ public class PersonController {
 
     @GetMapping("/person")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public String getCurrentPersonPage(@CurrentProfile User profile, Model model) {
-        model.addAttribute("user", new PersonView(profile));
-        return "profile";
+    public ModelAndView getCurrentPersonPage(@CurrentProfile User profile) {
+        return new ModelAndView("profile", "user", profile);
     }
 
     @GetMapping("/person/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public String getPersonPage(@CurrentProfile User profile,
-                                @PathVariable("id") Long id, Model model) {
+    public ModelAndView getPersonPage(@CurrentProfile User profile,
+                                      @PathVariable("id") Long id) {
         if(id.equals(profile.getId())) {
-            return "redirect:/api/person";
+            return new ModelAndView("redirect:/api/person");
         }
 
         log.debug("Request to get person id : {}", id);
@@ -65,15 +63,13 @@ public class PersonController {
         if (null == person) {
             log.debug("Person id:{} is not signed up", id);
         }
-        model.addAttribute("user", new PersonView(person));
-        return "anyPerson";
+        return new ModelAndView("anyPerson", "user", new PersonView(person));
     }
 
     @GetMapping("/changePassword")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public String getPasswordPage(@CurrentProfile User profile, Model model) {
-        model.addAttribute("user", new PersonView(profile));
-        return "changePassword";
+    public ModelAndView getPasswordPage(@CurrentProfile User profile) {
+        return new ModelAndView("changePassword", "user", new PersonView(profile));
     }
 
     @PostMapping("/changePassword")
@@ -94,11 +90,11 @@ public class PersonController {
 
     @GetMapping("/changeContact")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public String getContactsPage(@CurrentProfile User profile,
-                                  Model model) {
-        model.addAttribute("user", new PersonView(profile));
-        model.addAttribute("genders", Gender.values());
-        return "changeContacts";
+    public ModelAndView getContactsPage(@CurrentProfile User profile) {
+        ModelAndView mav = new ModelAndView("changeContacts");
+        mav.addObject("user", new PersonView(profile));
+        mav.addObject("genders", Gender.values());
+        return mav;
     }
 
     @PostMapping("/changeContact")
@@ -163,13 +159,46 @@ public class PersonController {
         return modelAndView;
     }
 
-    @PutMapping("/friends/add/{personId}")
-    public String addFriend() {
 
+    @PostMapping("/friends/add/{personId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String addFriend(@CurrentProfile User profile,
+                            @PathVariable("personId") Long personId,
+                            HttpServletRequest request) {
+
+        log.debug("Request to add id:{} as a person's: {} friend", personId, profile);
+        final User person = userService.findById(personId);
+        if (null == person) {
+            log.error("Can not find person by id: {}", personId);
+            throw new NullPointerException();
+        }
+        userService.addFriend(profile, person);
+
+        //Returns to the sender url
+        return getPreviousPageByRequest(request).orElse("/"); //else go to home page
     }
 
-    @PutMapping("/friends/remove/{personId}")
-    public String removeFriend() {
 
+    @PostMapping("/friends/remove/{personId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String removeFriend(@CurrentProfile User profile,
+                                     @PathVariable("personId") Long personId,
+                                     HttpServletRequest request) {
+        log.debug("Request to delete id:{} from a person's: {} friend", personId, profile);
+        final User person = userService.findById(personId);
+        if (null == person) {
+            log.error("Can not find person by id: {}", personId);
+            throw new NullPointerException();
+        }
+        userService.removeFriend(profile, person);
+
+        //Returns to the sender url
+        return getPreviousPageByRequest(request).orElse("/"); //else go to home page
     }
+
+    private Optional<String> getPreviousPageByRequest(HttpServletRequest request)
+    {
+        return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
+    }
+
 }

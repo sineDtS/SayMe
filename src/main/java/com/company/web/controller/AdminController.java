@@ -33,9 +33,8 @@ public class AdminController {
 
     @GetMapping("/main")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String getAdminPage(@CurrentProfile User profile, Model model) {
-        model.addAttribute("user", new PersonView(profile));
-        return "admin";
+    public ModelAndView getAdminPage(@CurrentProfile User profile) {
+        return new ModelAndView("admin", "user", new PersonView(profile));
     }
 
     @GetMapping("/users")
@@ -53,7 +52,7 @@ public class AdminController {
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
 
         Page<User> preparedList = userService.getPeople(PageRequest.of(evalPage, evalPageSize));
-        log.debug("PersonView list get total pages " + preparedList.getTotalPages() + " PersonView list get number " + preparedList.getNumber());
+        log.debug("PersonView list get total pages " + preparedList.getTotalPages() + " PersonView list get number " + preparedList.getNumberOfElements());
         PagerModel pager = new PagerModel(preparedList.getTotalPages(),preparedList.getNumber(),BUTTONS_TO_SHOW);
 
         // add personList

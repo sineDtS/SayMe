@@ -39,7 +39,7 @@ public class PersonView implements Serializable {
         this.email = person.getEmail();
         this.phone = person.getPhone();
         this.birthDate = person.getBirthDate();
-        this.gender = person.getGender().toString();
+        this.gender = String.valueOf(person.getGender());
         this.created = person.getCreated();
         this.isMyFriend =  person.isFriendOf(profile);
         this.isFriendOfMine = person.hasFriend(profile);

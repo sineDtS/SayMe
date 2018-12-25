@@ -1,5 +1,6 @@
 package com.company.persist.domain;
 
+
 import java.io.Serializable;
 
 public enum Gender implements Serializable {
@@ -25,4 +26,5 @@ public enum Gender implements Serializable {
         }
         return null;
     }
+
 }
