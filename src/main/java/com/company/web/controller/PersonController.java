@@ -162,38 +162,39 @@ public class PersonController {
 
     @PostMapping("/friends/add/{personId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public String addFriend(@CurrentProfile User profile,
+    public ModelAndView addFriend(@CurrentProfile User profile,
                             @PathVariable("personId") Long personId,
                             HttpServletRequest request) {
-
         log.debug("Request to add id:{} as a person's: {} friend", personId, profile);
-        final User person = userService.findById(personId);
+        User person = userService.findById(personId);
         if (null == person) {
             log.error("Can not find person by id: {}", personId);
             throw new NullPointerException();
         }
         userService.addFriend(profile, person);
+        log.debug("ADD FRIEND OPERATION FINISHED WITH THIS RESULTS : DO I HAVE FRIEND?" + profile.hasFriend(person) + " DOES FRIEND HAVE ME?" + person.isFriendOf(profile));
 
         //Returns to the sender url
-        return getPreviousPageByRequest(request).orElse("/"); //else go to home page
+        return new ModelAndView("anyPerson", "user", new PersonView(person));
     }
 
 
     @PostMapping("/friends/remove/{personId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public String removeFriend(@CurrentProfile User profile,
+    public ModelAndView removeFriend(@CurrentProfile User profile,
                                      @PathVariable("personId") Long personId,
                                      HttpServletRequest request) {
         log.debug("Request to delete id:{} from a person's: {} friend", personId, profile);
-        final User person = userService.findById(personId);
+        User person = userService.findById(personId);
         if (null == person) {
             log.error("Can not find person by id: {}", personId);
             throw new NullPointerException();
         }
         userService.removeFriend(profile, person);
+        log.debug("DELETE FRIEND OPERATION FINISHED WITH THIS RESULTS : DO I HAVE FRIEND?" + profile.hasFriend(person) + " DOES FRIEND HAVE ME?" + person.isFriendOf(profile));
 
         //Returns to the sender url
-        return getPreviousPageByRequest(request).orElse("/"); //else go to home page
+        return new ModelAndView("anyPerson", "user", new PersonView(person));
     }
 
     private Optional<String> getPreviousPageByRequest(HttpServletRequest request)
