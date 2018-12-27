@@ -162,7 +162,7 @@ public class PersonController {
 
     @PostMapping("/friends/add/{personId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ModelAndView addFriend(@CurrentProfile User profile,
+    public String addFriend(@CurrentProfile User profile,
                             @PathVariable("personId") Long personId,
                             HttpServletRequest request) {
         log.debug("Request to add id:{} as a person's: {} friend", personId, profile);
@@ -172,16 +172,15 @@ public class PersonController {
             throw new NullPointerException();
         }
         userService.addFriend(profile, person);
-        log.debug("ADD FRIEND OPERATION FINISHED WITH THIS RESULTS : DO I HAVE FRIEND?" + profile.hasFriend(person) + " DOES FRIEND HAVE ME?" + person.isFriendOf(profile));
 
         //Returns to the sender url
-        return new ModelAndView("anyPerson", "user", new PersonView(person));
+        return getPreviousPageByRequest(request).orElse("/");
     }
 
 
     @PostMapping("/friends/remove/{personId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ModelAndView removeFriend(@CurrentProfile User profile,
+    public String removeFriend(@CurrentProfile User profile,
                                      @PathVariable("personId") Long personId,
                                      HttpServletRequest request) {
         log.debug("Request to delete id:{} from a person's: {} friend", personId, profile);
@@ -191,10 +190,9 @@ public class PersonController {
             throw new NullPointerException();
         }
         userService.removeFriend(profile, person);
-        log.debug("DELETE FRIEND OPERATION FINISHED WITH THIS RESULTS : DO I HAVE FRIEND?" + profile.hasFriend(person) + " DOES FRIEND HAVE ME?" + person.isFriendOf(profile));
 
         //Returns to the sender url
-        return new ModelAndView("anyPerson", "user", new PersonView(person));
+        return getPreviousPageByRequest(request).orElse("/");
     }
 
     private Optional<String> getPreviousPageByRequest(HttpServletRequest request)

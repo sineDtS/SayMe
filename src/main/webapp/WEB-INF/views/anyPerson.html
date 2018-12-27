@@ -24,8 +24,9 @@
                         <form th:case="${user.isMyFriend and user.isFriendOfMine}" th:action="@{/api/friends/remove/{personId} (personId=${user.id})}" th:method="post">
                             <button type="submit" class="btn btn-danger btn-sm" >Delete from friends</button>
                         </form>
-                        <form th:case="${user.isMyFriend}">
+                        <form th:case="${user.isMyFriend}" th:action="@{/api/friends/remove/{personId} (personId=${user.id})}" th:method="post">
                             <p>You are subscribed on him</p>
+                            <button type="submit" class="btn btn-danger btn-sm" >Unsubscribe from him</button>
                         </form>
                         <form th:case="*" th:action="@{/api/friends/add/{personId} (personId=${user.id})}" th:method="post">
                             <button  type="submit" class="btn btn-primary btn-sm" >Add to friends</button>
