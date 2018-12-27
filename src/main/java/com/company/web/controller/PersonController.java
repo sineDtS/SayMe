@@ -32,7 +32,7 @@ public class PersonController {
 
     private static final Logger log = LoggerFactory.getLogger(PersonController.class);
 
-    private final UserService userService;
+    private final UserService userServiceImpl;
 
     @ModelAttribute("changePassword")
     public ChangePassword changePasswordDto() {
@@ -59,7 +59,7 @@ public class PersonController {
         }
 
         log.debug("Request to get person id : {}", id);
-        final User person = userService.findById(id);
+        final User person = userServiceImpl.findById(id);
         if (null == person) {
             log.debug("Person id:{} is not signed up", id);
         }
@@ -78,13 +78,13 @@ public class PersonController {
                                  @ModelAttribute("changePassword") @Valid ChangePassword changePasswordDto,
                                  BindingResult result) {
 
-        if(!userService.hasValidPassword(profile, changePasswordDto.getCurrentPassword())) {
+        if(!userServiceImpl.hasValidPassword(profile, changePasswordDto.getCurrentPassword())) {
             result.rejectValue("currentPassword", null, "Current password is not correct");
         }
         if (result.hasErrors()){
             return "changePassword";
         }
-        userService.changePassword(profile,changePasswordDto.getPassword());
+        userServiceImpl.changePassword(profile,changePasswordDto.getPassword());
         return "redirect:/api/changePassword?success";
     }
 
@@ -105,7 +105,7 @@ public class PersonController {
         final String oldEmail = profile.getEmail();
         final String newEmail = contact.getEmail();
         if (!oldEmail.equals(newEmail)) {
-            final User resultOfCheck = userService.findByEmail(newEmail);
+            final User resultOfCheck = userServiceImpl.findByEmail(newEmail);
             if (null != resultOfCheck) {
                 log.debug("Attempt to change email value from: {} to {} failed! " +
                         "E-mail is already used by another contact : {}", resultOfCheck);
@@ -121,7 +121,7 @@ public class PersonController {
         profile.setPhone(contact.getPhone());
         profile.setBirthDate(contact.getBirthDate());
         profile.setGender(contact.getGender());
-        userService.update(profile);
+        userServiceImpl.update(profile);
         return "redirect:/api/changeContact?success";
     }
 
@@ -140,7 +140,7 @@ public class PersonController {
         // param. decreased by 1.
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
 
-        Page<PersonView> preparedList = userService.getModelPeople(PageRequest.of(evalPage, evalPageSize));
+        Page<PersonView> preparedList = userServiceImpl.getModelPeople(PageRequest.of(evalPage, evalPageSize));
         log.debug("PersonView list get total pages " + preparedList.getTotalPages() + ", PersonView list get number " + preparedList.getNumberOfElements());
         PagerModel pager = new PagerModel(preparedList.getTotalPages(),preparedList.getNumberOfElements(),BUTTONS_TO_SHOW);
 
@@ -166,12 +166,12 @@ public class PersonController {
                             @PathVariable("personId") Long personId,
                             HttpServletRequest request) {
         log.debug("Request to add id:{} as a person's: {} friend", personId, profile);
-        User person = userService.findById(personId);
+        User person = userServiceImpl.findById(personId);
         if (null == person) {
             log.error("Can not find person by id: {}", personId);
             throw new NullPointerException();
         }
-        userService.addFriend(profile, person);
+        userServiceImpl.addFriend(profile, person);
 
         //Returns to the sender url
         return getPreviousPageByRequest(request).orElse("/");
@@ -184,12 +184,12 @@ public class PersonController {
                                      @PathVariable("personId") Long personId,
                                      HttpServletRequest request) {
         log.debug("Request to delete id:{} from a person's: {} friend", personId, profile);
-        User person = userService.findById(personId);
+        User person = userServiceImpl.findById(personId);
         if (null == person) {
             log.error("Can not find person by id: {}", personId);
             throw new NullPointerException();
         }
-        userService.removeFriend(profile, person);
+        userServiceImpl.removeFriend(profile, person);
 
         //Returns to the sender url
         return getPreviousPageByRequest(request).orElse("/");

@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,7 +28,7 @@ public class AdminController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
-    private final UserService userService;
+    private final UserService userServiceImpl;
 
     @GetMapping("/main")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -51,7 +50,7 @@ public class AdminController {
         // param. decreased by 1.
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
 
-        Page<User> preparedList = userService.getPeople(PageRequest.of(evalPage, evalPageSize));
+        Page<User> preparedList = userServiceImpl.getPeople(PageRequest.of(evalPage, evalPageSize));
         log.debug("PersonView list get total pages " + preparedList.getTotalPages() + " PersonView list get number " + preparedList.getNumberOfElements());
         PagerModel pager = new PagerModel(preparedList.getTotalPages(),preparedList.getNumber(),BUTTONS_TO_SHOW);
 

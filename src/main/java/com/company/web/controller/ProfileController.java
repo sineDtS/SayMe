@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,7 +24,7 @@ public class ProfileController {
 
     private static final Logger log = LoggerFactory.getLogger(ProfileController.class);
 
-    private final UserService userService;
+    private final UserService userServiceImpl;
 
     @ModelAttribute("userRegister")
     public UserRegistration userRegistrationDto() {
@@ -56,7 +55,7 @@ public class ProfileController {
     public String registerUserAccount(@ModelAttribute("userRegister") @Valid UserRegistration userDto,
                                       BindingResult result){
 
-        User existing = userService.findByEmail(userDto.getEmail());
+        User existing = userServiceImpl.findByEmail(userDto.getEmail());
         if (existing != null){
             result.rejectValue("email", null, "There is already an account registered with that email");
         }
@@ -64,7 +63,7 @@ public class ProfileController {
         if (result.hasErrors()){
             return "register";
         }
-        userService.create(userDto);
+        userServiceImpl.create(userDto);
         return "redirect:/registration?success";
     }
 
