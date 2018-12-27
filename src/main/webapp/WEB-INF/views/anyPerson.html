@@ -20,12 +20,17 @@
                 <div id="userphoto">
                     <img src="../resources/static/images/avatar.png" th:src="@{/images/avatar.png}" alt="default avatar">
                     <p></p>
-                    <p th:if="${user.isMyFriend and !user.isFriendOfMine}">You are subscribed on him</p>
                     <div th:switch="true">
-                        <button th:case="${user.isMyFriend and user.isFriendOfMine}" type="submit" class="btn btn-danger btn-sm" >Delete from friends</button>
-                        <button th:case="${user.isMyFriend}" type="submit" class="btn btn-danger btn-sm" >Unsubscribe from him</button>
-                        <button th:case="${user.isFriendOfMine}" type="submit" class="btn btn-secondary btn-sm" >Accept friend offer</button>
-                        <button th:case="${!user.isMyFriend and !user.isFriendOfMine}" type="submit" class="btn btn-primary btn-sm" >Add to friends</button>
+                        <form th:case="${user.isMyFriend and user.isFriendOfMine}" th:action="@{/api/friends/remove/{personId} (personId=${user.id})}" th:method="post">
+                            <button type="submit" class="btn btn-danger btn-sm" >Delete from friends</button>
+                        </form>
+                        <form th:case="${user.isMyFriend}" th:action="@{/api/friends/remove/{personId} (personId=${user.id})}" th:method="post">
+                            <p>You are subscribed on him</p>
+                            <button type="submit" class="btn btn-danger btn-sm" >Unsubscribe from him</button>
+                        </form>
+                        <form th:case="*" th:action="@{/api/friends/add/{personId} (personId=${user.id})}" th:method="post">
+                            <button  type="submit" class="btn btn-primary btn-sm" >Add to friends</button>
+                        </form>
                     </div>
                 </div>
                 <h1>User Profile</h1>

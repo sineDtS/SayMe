@@ -62,18 +62,10 @@
                         <td th:text="*{email}">Text ...</td>
                         <td th:switch="true" >
                             <p th:case="${person.email == user.email}"></p>
-                            <form th:case="*{isMyFriend and isFriendOfMine}" th:action="@{friends/remove/{personId} (personId=*{id})}" th:method="post">
-                                <button type="submit" class="btn btn-danger btn-sm" >Delete from friends</button>
-                            </form>
-                            <form th:case="*{isMyFriend}">
-                                <p>You are subscribed on this person</p>
-                            </form>
-                            <form th:case="*{isFriendOfMine}" th:action="@{friends/add/{personId} (personId=*{id})}" method="post" >
-                                <button type="submit" class="btn btn-secondary btn-sm">Accept friend offer</button>
-                            </form>
-                            <form th:case="*" th:action="@{friends/add/{personId} (personId=*{id})}" method="post">
-                                <button type="submit" class="btn btn-primary btn-sm">Add to friends</button>
-                            </form>
+                            <p th:case="*{isMyFriend and isFriendOfMine}">Friend</p>
+                            <p th:case="*{isMyFriend}">You are subscribed on this person</p>
+                            <p th:case="*{isFriendOfMine}">Subscriber</p>
+                            <p th:case="*{!isMyFriend and !isFriendOfMine}">Stranger</p>
                         </td>
                     </tr>
                     </tbody>
