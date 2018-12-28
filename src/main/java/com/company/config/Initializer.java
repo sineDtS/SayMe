@@ -17,19 +17,11 @@ public class Initializer extends
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] { WebAppConfig.class };
+        return new Class[] { WebAppConfig.class, SwaggerConfig.class };
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[] { "/" };
-    }
-
-    @Override
-    protected FrameworkServlet createDispatcherServlet (WebApplicationContext wac) {
-        DispatcherServlet ds = new DispatcherServlet(wac);
-        //setting this flag to true will throw NoHandlerFoundException instead of 404 page
-        ds.setThrowExceptionIfNoHandlerFound(true);
-        return ds;
+        return new String[] { "/", "/v2/api-docs" };
     }
 }

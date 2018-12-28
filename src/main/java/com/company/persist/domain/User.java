@@ -1,6 +1,7 @@
 package com.company.persist.domain;
 
 import com.company.persist.domain.Converter.GenderConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.Formula;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,7 +65,7 @@ public class User implements UserDetails, Serializable {
     private Date created = new Date();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @Getter @Setter
+    @Getter @Setter @JsonIgnore
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -74,14 +75,14 @@ public class User implements UserDetails, Serializable {
     @JoinTable(name = "friends",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id"))
-    @Getter @Setter
+    @Getter @Setter @JsonIgnore
     private Set<User> friends = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "friends",
             joinColumns = @JoinColumn(name = "friend_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @Getter @Setter
+    @Getter @Setter @JsonIgnore
     private Set<User> friendOf = new HashSet<>();
 
     public boolean hasFriend(User friend) {

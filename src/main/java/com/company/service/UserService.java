@@ -9,12 +9,13 @@ import org.springframework.data.domain.Pageable;
 public interface UserService {
     User findById(Long id);
     User findByEmail(String email);
-    Page<User> getPeople(Pageable pageRequest);
-    Page<PersonView> getModelPeople(Pageable pageRequest);
+    Page<User> getPeople(String searchTerm, Pageable pageRequest);
+    Page<User> getFriends(User person, String searchTerm, Pageable pageRequest);
+    Page<User> getFriendOf(User person, String searchTerm, Pageable pageRequest);
     void addFriend(User person, User friend);
     void removeFriend(User person, User friend);
     void update(User person);
-    void create(UserRegistration registration);
+    User create(UserRegistration registration);
     boolean hasValidPassword(User person, String pwd);
     void changePassword(User person, String pwd);
 }

@@ -15,6 +15,9 @@ import java.util.Date;
 public class ContactInformation implements Serializable{
 
     @NotNull
+    private Long id;
+
+    @NotNull
     @Size(min = 2, max = 50, message = "Should be between 2 and 50")
     @Getter @Setter
     private String firstName;
