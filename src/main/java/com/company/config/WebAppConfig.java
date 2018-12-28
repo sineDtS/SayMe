@@ -21,9 +21,4 @@ public class WebAppConfig implements WebMvcConfigurer{
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
-    @Override
-    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }
-
 }
