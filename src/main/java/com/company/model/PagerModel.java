@@ -35,11 +35,11 @@ public class PagerModel {
         }
     }
 
-    public int getButtonsToShow() {
+    private int getButtonsToShow() {
         return buttonsToShow;
     }
 
-    public void setButtonsToShow(int buttonsToShow) {
+    private void setButtonsToShow(int buttonsToShow) {
         if (buttonsToShow % 2 != 0) {
             this.buttonsToShow = buttonsToShow;
         } else {
@@ -51,7 +51,7 @@ public class PagerModel {
         return startPage;
     }
 
-    public void setStartPage(int startPage) {
+    private void setStartPage(int startPage) {
         this.startPage = startPage;
     }
 
@@ -59,7 +59,7 @@ public class PagerModel {
         return endPage;
     }
 
-    public void setEndPage(int endPage) {
+    private void setEndPage(int endPage) {
         this.endPage = endPage;
     }
 
