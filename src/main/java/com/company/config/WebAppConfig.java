@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("com.company.web.controller")
+@ComponentScan("com.company.web")
 public class WebAppConfig implements WebMvcConfigurer{
 
     @Override

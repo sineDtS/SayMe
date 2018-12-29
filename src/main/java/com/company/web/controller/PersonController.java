@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
@@ -50,7 +51,7 @@ public class PersonController {
     @GetMapping("/people")
     public Page<PersonView> getPeople(
             @RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm,
-            @PageableDefault(size = 20) Pageable pageRequest) {
+            @PageableDefault(size = 20) PageRequest pageRequest) {
         log.debug("REST request to get people list (searchTerm:{}, pageRequest:{})", searchTerm, pageRequest);
 
         final Page<User> people = userServiceImpl.getPeople(searchTerm, pageRequest);

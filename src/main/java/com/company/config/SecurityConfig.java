@@ -1,8 +1,11 @@
 package com.company.config;
 
 import com.company.security.CustomUserDetailsService;
+import com.company.security.MySavedRequestAwareAuthenticationSuccessHandler;
 import com.company.security.RestAuthenticationEntryPoint;
+import com.company.web.error.CustomAccessDeniedHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -11,8 +14,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,25 +27,34 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.company.config.Constants.REMEMBER_ME_COOKIE;
-import static com.company.config.Constants.REMEMBER_ME_TOKEN;
-
-
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@ComponentScan("com.company.security")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomUserDetailsService userDetailsService;
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private CustomAccessDeniedHandler accessDeniedHandler;
+    private MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService, RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
+    private SimpleUrlAuthenticationFailureHandler myFailureHandler = new SimpleUrlAuthenticationFailureHandler();
+
+    public SecurityConfig(CustomUserDetailsService userDetailsService,
+                          RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                          CustomAccessDeniedHandler accessDeniedHandler,
+                          MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler) {
+        super();
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
         this.userDetailsService = userDetailsService;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.mySuccessHandler = mySuccessHandler;
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(11);
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -66,49 +80,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**"
         };
 
-            http
-                .cors()
-                    .and()
-                .csrf()
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .and()
-                .httpBasic()
-                    .and()
+        http.cors().and().csrf().disable()
                 .authorizeRequests()
-                    .antMatchers(swagger).permitAll()
-                    .antMatchers("/").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/login").permitAll()
-                    .antMatchers(HttpMethod.POST, "/api/registration").permitAll()
-                    .antMatchers("/api/**").authenticated()
-                    .and()
-                .logout()
-                    .logoutUrl("/api/logout")
-                    .deleteCookies(REMEMBER_ME_COOKIE)
-                    .permitAll()
-                    .and()
-                .headers()
-                    .frameOptions()
-                    .disable()
-                    .and()
-                .rememberMe()
-                    .rememberMeServices(rememberMeService())
-                    .key(REMEMBER_ME_TOKEN)
-                    .and()
+                .and()
                 .exceptionHandling()
-                    .authenticationEntryPoint(restAuthenticationEntryPoint)
-        ;
-    }
-
-    @Bean
-    public TokenBasedRememberMeServices rememberMeService() {
-        final TokenBasedRememberMeServices services =
-                new TokenBasedRememberMeServices(REMEMBER_ME_TOKEN, userDetailsService);
-
-        services.setCookieName(REMEMBER_ME_COOKIE);
-        services.setTokenValiditySeconds(3600);
-        services.setAlwaysRemember(true);
-
-        return services;
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .and()
+                .authorizeRequests()
+                .antMatchers(swagger).permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/registration").permitAll()
+                .antMatchers("/api/**").authenticated()
+                .and()
+                .formLogin()
+                .successHandler(mySuccessHandler)
+                .failureHandler(myFailureHandler)
+                .and()
+                .httpBasic()
+                .and()
+                .logout();
     }
 
     @Bean
