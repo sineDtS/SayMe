@@ -40,13 +40,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<User> getPeople(Pageable pageRequest) {
-        return userRepository.findAll(pageRequest);
+    public Page<User> getPeople(String searchTerm, Pageable pageRequest) {
+        return userRepository.findPeople(searchTerm, pageRequest);
     }
 
     @Transactional(readOnly = true)
-    public Page<PersonView> getModelPeople(Pageable pageRequest) {
-        return userRepository.findAll(pageRequest).map(PersonView::new);
+    public Page<User> getFriends(User person, String searchTerm, Pageable pageRequest) {
+        return userRepository.findFriends(person, searchTerm, pageRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<User> getFriendOf(User person, String searchTerm, Pageable pageRequest) {
+        return userRepository.findFriendOf(person, searchTerm, pageRequest);
     }
 
     @Transactional
@@ -71,7 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void create(UserRegistration registration){
+    public User create(UserRegistration registration){
 
         final User person = User.builder()
                 .firstName(registration.getFirstName())
@@ -80,7 +85,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(registration.getPassword()))
                 .build();
 
-        userRepository.save(person);
+        return userRepository.save(person);
     }
 
     public boolean hasValidPassword(User person, String pwd) {

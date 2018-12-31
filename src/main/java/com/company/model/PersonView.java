@@ -43,6 +43,5 @@ public class PersonView implements Serializable {
         this.created = person.getCreated();
         this.isMyFriend =  person.isFriendOf(profile);
         this.isFriendOfMine = person.hasFriend(profile);
-        log.debug(this.fullName + " isMyFriend = " + this.isMyFriend + " and isFriendOfMine = " + this.isFriendOfMine);
     }
 }

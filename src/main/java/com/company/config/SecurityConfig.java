@@ -1,38 +1,60 @@
 package com.company.config;
 
 import com.company.security.CustomUserDetailsService;
+import com.company.security.MySavedRequestAwareAuthenticationSuccessHandler;
+import com.company.security.RestAuthenticationEntryPoint;
+import com.company.web.error.CustomAccessDeniedHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@ComponentScan("com.company.security")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     private final CustomUserDetailsService userDetailsService;
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private CustomAccessDeniedHandler accessDeniedHandler;
+    private MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler;
 
-    //  @Autowired
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    private SimpleUrlAuthenticationFailureHandler myFailureHandler = new SimpleUrlAuthenticationFailureHandler();
+
+    public SecurityConfig(CustomUserDetailsService userDetailsService,
+                          RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                          CustomAccessDeniedHandler accessDeniedHandler,
+                          MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler) {
+        super();
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
         this.userDetailsService = userDetailsService;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.mySuccessHandler = mySuccessHandler;
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(11);
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -44,32 +66,53 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    // @Autowired
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CharacterEncodingFilter filter = new CharacterEncodingFilter();
-        filter.setEncoding("UTF-8");
-        filter.setForceEncoding(true);
-        http
-                .addFilterBefore(filter, CsrfFilter.class)
-                // .csrf().disable()
+
+        final String[] swagger = {
+                "/swagger-resources/**",
+                "/swagger-ui.html",
+                "/v2/api-docs",
+                "/webjars/**"
+        };
+
+        http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/", "/index", "/css/*", "/js/*", "/images/favicon.ico", "/registration").permitAll()
-                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .and()
+                .authorizeRequests()
+                .antMatchers(swagger).permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/registration").permitAll()
+                .antMatchers("/api/**").authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login").permitAll()
+                .successHandler(mySuccessHandler)
+                .failureHandler(myFailureHandler)
                 .and()
-                .logout().invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/logout-success").permitAll()
+                .httpBasic()
                 .and()
-                .exceptionHandling().accessDeniedPage("/403");
+                .logout();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedHeaders(Collections.singletonList("*"));
+        config.setMaxAge(1800L);
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
