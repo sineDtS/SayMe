@@ -31,13 +31,11 @@ public class MySavedRequestAwareAuthenticationSuccessHandler extends SimpleUrlAu
 
         if (savedRequest == null) {
             clearAuthenticationAttributes(request);
-            return;
         }
         final String targetUrlParameter = getTargetUrlParameter();
         if (isAlwaysUseDefaultTargetUrl() || (targetUrlParameter != null && StringUtils.hasText(request.getParameter(targetUrlParameter)))) {
             requestCache.removeRequest(request, response);
             clearAuthenticationAttributes(request);
-            return;
         }
 
         clearAuthenticationAttributes(request);

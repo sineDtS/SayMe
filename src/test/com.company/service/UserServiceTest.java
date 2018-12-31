@@ -4,18 +4,16 @@ import com.company.AbstractApplicationTest;
 import com.company.config.DataConfig;
 import com.company.config.SecurityConfig;
 import com.company.config.WebAppConfig;
+import com.company.model.PersonView;
 import com.company.model.UserRegistration;
 import com.company.persist.domain.Gender;
 import com.company.persist.domain.User;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 import java.util.GregorianCalendar;
@@ -58,7 +56,7 @@ public class UserServiceTest extends AbstractApplicationTest {
 
     @Test
     public void shouldFindAllPeople() throws Exception {
-        final Page<User> people = userService.getPeople("", getDefaultPageRequest());
+        final Page<PersonView> people = userService.getModelPeople("", getDefaultPageRequest());
 
         assertThat(people).hasSize(8);
         assertThat(people)
@@ -71,7 +69,7 @@ public class UserServiceTest extends AbstractApplicationTest {
     @Test
     public void shouldFindAllFriends() throws Exception {
         final User person = userService.findById(1L);
-        final Page<User> friends = userService.getFriends(person, "", getDefaultPageRequest());
+        final Page<PersonView> friends = userService.getFriends(person, "", getDefaultPageRequest());
 
         assertThat(friends).hasSize(2);
         assertThat(friends)
@@ -84,7 +82,7 @@ public class UserServiceTest extends AbstractApplicationTest {
     @Test
     public void shouldFindAllFriendOf() throws Exception {
         final User person = userService.findById(1L);
-        final Page<User> friendOf = userService.getFriendOf(person, "", getDefaultPageRequest());
+        final Page<PersonView> friendOf = userService.getFriendOf(person, "", getDefaultPageRequest());
 
         assertThat(friendOf).hasSize(2);
         assertThat(friendOf)

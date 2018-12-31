@@ -11,12 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.Optional;
 
 import static com.company.config.Constants.*;
 
@@ -51,12 +51,21 @@ public class PersonController {
     @GetMapping("/people")
     public Page<PersonView> getPeople(
             @RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm,
-            @PageableDefault(size = 20) PageRequest pageRequest) {
-        log.debug("REST request to get people list (searchTerm:{}, pageRequest:{})", searchTerm, pageRequest);
+            @RequestParam("pageSize") Optional<Integer> pageSize,
+            @RequestParam("page") Optional<Integer> page) {
+        log.debug("REST request to get people list (searchTerm:{})", searchTerm);
 
-        final Page<User> people = userServiceImpl.getPeople(searchTerm, pageRequest);
+        // Evaluate page size. If requested parameter is null, return initial page size
+        int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
 
-        return people.map(PersonView::new);
+        // Evaluate page. If requested parameter is null or less than 0 (to
+        // prevent exception), return initial size. Otherwise, return value of
+        // param. decreased by 1.
+        int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
+
+        Page<PersonView> people = userServiceImpl.getModelPeople(searchTerm, PageRequest.of(evalPage, evalPageSize));
+
+        return people;
     }
 
     @ApiOperation(value = "Find friends")
@@ -64,12 +73,21 @@ public class PersonController {
     public Page<PersonView> getFriends(
             @ApiIgnore @CurrentProfile User profile,
             @RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm,
-            @PageableDefault(size = 20) Pageable pageRequest) {
-        log.debug("REST request to get person's: {} friend list (searchTerm:{}, pageRequest:{})", profile, searchTerm, pageRequest);
+            @RequestParam("pageSize") Optional<Integer> pageSize,
+            @RequestParam("page") Optional<Integer> page) {
+        log.debug("REST request to get person's: {} friend list (searchTerm:{})", profile, searchTerm);
 
-        final Page<User> friends = userServiceImpl.getFriends(profile, searchTerm, pageRequest);
+        // Evaluate page size. If requested parameter is null, return initial page size
+        int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
 
-        return friends.map(PersonView::new);
+        // Evaluate page. If requested parameter is null or less than 0 (to
+        // prevent exception), return initial size. Otherwise, return value of
+        // param. decreased by 1.
+        int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
+
+        final Page<PersonView> friends = userServiceImpl.getFriends(profile, searchTerm, PageRequest.of(evalPage, evalPageSize));
+
+        return friends;
     }
 
     @ApiOperation(value = "Find followers")
@@ -77,12 +95,21 @@ public class PersonController {
     public Page<PersonView> getFriendOf(
             @ApiIgnore @CurrentProfile User profile,
             @RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm,
-            @PageableDefault(size = 20) Pageable pageRequest) {
-        log.debug("REST request to get person's: {} friend_of list (searchTerm:{}, pageRequest:{})", profile, searchTerm, pageRequest);
+            @RequestParam("pageSize") Optional<Integer> pageSize,
+            @RequestParam("page") Optional<Integer> page) {
+        log.debug("REST request to get person's: {} friend_of list (searchTerm:{})", profile, searchTerm);
 
-        final Page<User> friendOf = userServiceImpl.getFriendOf(profile, searchTerm, pageRequest);
+        // Evaluate page size. If requested parameter is null, return initial page size
+        int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
 
-        return friendOf.map(PersonView::new);
+        // Evaluate page. If requested parameter is null or less than 0 (to
+        // prevent exception), return initial size. Otherwise, return value of
+        // param. decreased by 1.
+        int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
+
+        final Page<PersonView> friendOf = userServiceImpl.getFriendOf(profile, searchTerm, PageRequest.of(evalPage, evalPageSize));
+
+        return friendOf;
     }
 
     @ApiOperation(value = "Add as friend")

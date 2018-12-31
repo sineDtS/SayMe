@@ -40,18 +40,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<User> getPeople(String searchTerm, Pageable pageRequest) {
-        return userRepository.findPeople(searchTerm, pageRequest);
+    public Page<PersonView> getModelPeople(String searchTerm, Pageable pageRequest) {
+        return userRepository.findPeople(searchTerm, pageRequest).map(PersonView::new);
     }
 
     @Transactional(readOnly = true)
-    public Page<User> getFriends(User person, String searchTerm, Pageable pageRequest) {
-        return userRepository.findFriends(person, searchTerm, pageRequest);
+    public Page<PersonView> getFriends(User person, String searchTerm, Pageable pageRequest) {
+        return userRepository.findFriends(person, searchTerm, pageRequest).map(PersonView::new);
     }
 
     @Transactional(readOnly = true)
-    public Page<User> getFriendOf(User person, String searchTerm, Pageable pageRequest) {
-        return userRepository.findFriendOf(person, searchTerm, pageRequest);
+    public Page<PersonView> getFriendOf(User person, String searchTerm, Pageable pageRequest) {
+        return userRepository.findFriendOf(person, searchTerm, pageRequest).map(PersonView::new);
     }
 
     @Transactional

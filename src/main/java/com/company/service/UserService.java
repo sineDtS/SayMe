@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 public interface UserService {
     User findById(Long id);
     User findByEmail(String email);
-    Page<User> getPeople(String searchTerm, Pageable pageRequest);
-    Page<User> getFriends(User person, String searchTerm, Pageable pageRequest);
-    Page<User> getFriendOf(User person, String searchTerm, Pageable pageRequest);
+    Page<PersonView> getModelPeople(String searchTerm, Pageable pageRequest);
+    Page<PersonView> getFriends(User person, String searchTerm, Pageable pageRequest);
+    Page<PersonView> getFriendOf(User person, String searchTerm, Pageable pageRequest);
     void addFriend(User person, User friend);
     void removeFriend(User person, User friend);
     void update(User person);
