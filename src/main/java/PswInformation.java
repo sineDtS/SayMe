@@ -11,7 +11,7 @@ public class PswInformation {
     // 7913782o - psw for den str (admin)
 
     public static void main(String[] args) {
-        String encoded=new BCryptPasswordEncoder(11).encode("7913782o");
+        String encoded=new BCryptPasswordEncoder().encode("7913782o");
         System.out.println(encoded);
     }
 }

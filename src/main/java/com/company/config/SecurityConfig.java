@@ -22,10 +22,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     private final CustomUserDetailsService userDetailsService;
 
-    //  @Autowired
     public SecurityConfig(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
@@ -43,8 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-
-    // @Autowired
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
     }
