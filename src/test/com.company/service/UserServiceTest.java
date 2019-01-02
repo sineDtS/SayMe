@@ -10,6 +10,7 @@ import com.company.persist.domain.Gender;
 import com.company.persist.domain.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,25 +30,26 @@ import static org.assertj.core.api.Assertions.tuple;
 @Transactional
 public class UserServiceTest extends AbstractApplicationTest {
 
-    private UserServiceImpl userService;
+    @Autowired
+    private UserService userService;
 
     @Test
-    public void shouldFindPersonWithCorrectIdAndFields() throws Exception {
+    public void shouldFindPersonWithCorrectIdAndFields() {
         final User person = userService.findById(1L);
 
         assertThat(person.getId()).isEqualTo(1L);
-        assertThat(person.getFirstName()).isEqualTo("Denis");
+        assertThat(person.getFirstName()).isEqualTo("Den");
         assertThat(person.getLastName()).isEqualTo("Streltsov");
-        assertThat(person.getFullName()).isEqualTo("Denis Streltsov");
+        assertThat(person.getFullName()).isEqualTo("Den Streltsov");
         assertThat(person.getEmail()).isEqualTo("den.strelts@gmail.com");
         assertThat(person.getPhone()).isEqualTo("+375295839006");
-        assertThat(person.getBirthDate()).isEqualTo(new GregorianCalendar(1996, 6, 7).getTime());
+        assertThat(person.getBirthDate()).isEqualTo(new GregorianCalendar(1996, 5, 7).getTime());
         assertThat(person.getGender()).isEqualTo(Gender.MALE);
         //...
     }
 
     @Test
-    public void shouldFindPersonWithCorrectEmail() throws Exception {
+    public void shouldFindPersonWithCorrectEmail() {
         final User person = userService.findByEmail("den.strelts@gmail.com");
 
         assertThat(person.getId()).isEqualTo(1L);
@@ -55,19 +57,19 @@ public class UserServiceTest extends AbstractApplicationTest {
     }
 
     @Test
-    public void shouldFindAllPeople() throws Exception {
+    public void shouldFindAllPeople() {
         final Page<PersonView> people = userService.getModelPeople("", getDefaultPageRequest());
 
         assertThat(people).hasSize(8);
         assertThat(people)
                 .extracting("id", "fullName")
                 .contains(
-                        tuple(1L, "Denis Streltsov"),
-                        tuple(4L, "Natalia Shmatova"));
+                        tuple(1L, "Den Streltsov"),
+                        tuple(2L, "Natalia Shmatova"));
     }
 
     @Test
-    public void shouldFindAllFriends() throws Exception {
+    public void shouldFindAllFriends() {
         final User person = userService.findById(1L);
         final Page<PersonView> friends = userService.getFriends(person, "", getDefaultPageRequest());
 
@@ -75,12 +77,12 @@ public class UserServiceTest extends AbstractApplicationTest {
         assertThat(friends)
                 .extracting("id", "fullName")
                 .contains(
-                        tuple(4L, "Natalia Shmatova"),
-                        tuple(2L, "And Vor"));
+                        tuple(4L, "Michael Corleone"),
+                        tuple(5L, "Ilya Streltsov"));
     }
 
     @Test
-    public void shouldFindAllFriendOf() throws Exception {
+    public void shouldFindAllFriendOf() {
         final User person = userService.findById(1L);
         final Page<PersonView> friendOf = userService.getFriendOf(person, "", getDefaultPageRequest());
 
@@ -88,21 +90,21 @@ public class UserServiceTest extends AbstractApplicationTest {
         assertThat(friendOf)
                 .extracting("id", "fullName")
                 .contains(
-                        tuple(4L, "Natalia Shmatova"),
-                        tuple(2L, "And Vor"));
+                        tuple(2L, "Natalia Shmatova"),
+                        tuple(4L, "Michael Corleone"));
     }
 
     @Test
-    public void shouldFindAPerson() throws Exception {
+    public void shouldFindAPerson() {
         final User person = userService.findById(1L);
 
         assertThat(person)
                 .hasFieldOrPropertyWithValue("id", 1L)
-                .hasFieldOrPropertyWithValue("fullName", "Denis Streltsov");
+                .hasFieldOrPropertyWithValue("fullName", "Den Streltsov");
     }
 
     @Test
-    public void shouldAddAndRemoveAFriend() throws Exception {
+    public void shouldAddAndRemoveAFriend() {
         final User person = userService.findById(1L);
         final User friend = userService.findById(3L);
 
@@ -128,7 +130,7 @@ public class UserServiceTest extends AbstractApplicationTest {
     }
 
     @Test
-    public void shouldUpdatePersonInformation() throws Exception {
+    public void shouldUpdatePersonInformation() {
         final User person = userService.findById(1L);
         person.setGender(Gender.UNDEFINED);
         userService.update(person);
@@ -137,12 +139,12 @@ public class UserServiceTest extends AbstractApplicationTest {
 
         assertThat(result)
                 .hasFieldOrPropertyWithValue("id", 1L)
-                .hasFieldOrPropertyWithValue("fullName", "Denis Streltsov")
+                .hasFieldOrPropertyWithValue("fullName", "Den Streltsov")
                 .hasFieldOrPropertyWithValue("gender", Gender.UNDEFINED);
     }
 
     @Test
-    public void shouldChangePassword() throws Exception {
+    public void shouldChangePassword() {
         final User person = userService.findById(1L);
         final String currentPwd = "7913782o";
         final String newPwd = "12345";
@@ -157,8 +159,8 @@ public class UserServiceTest extends AbstractApplicationTest {
     }
 
     @Test
-    public void shouldCreateNewPerson() throws Exception {
-        UserRegistration user = new UserRegistration("Vito","Corleone","vito@corleone.com","12345");
+    public void shouldCreateNewPerson() {
+        UserRegistration user = new UserRegistration("Vito","Corleone","12345","vito@corleone.com");
         final User actual = userService.create(user);
         final User expected = userService.findByEmail("vito@corleone.com");
 
