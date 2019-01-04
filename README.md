@@ -1,14 +1,68 @@
 ## SayMe Messenger
 
-Messaging apps (a.k.a. "Social messaging" or "chat applications") are apps and platforms that enable messaging, 
-many of which started around social networking platforms, but many of which have now developed into broad platforms 
-enabling status updates, chatbots, payments and conversational commerce (e-commerce via chat).
+An example application using Thymeleaf/Bootstrap as frontend and Spring MVC, Spring Data, Spring Security.
+This project have 2 branches - user representation with help of Thymeleaf and RESTful part with Swagger UI.
 
-SayMe Messenger is a FREE browser messaging app used for searching friends, instant messaging, sharing photos. 
-The app can be used to communicate with your friends.
+> NOTE: This project is under development, a lot of new features will be added in future.
 
-What the people like on the Web Messenger is the ability to find conversation very quick, the speed of the chat, 
-the nice flat design and the big input areas.
+Technology stack:
+
+* Spring Non-boot application version 5.1.3.RELEASE
+* Spring MVC
+* Spring Data JPA
+* Hibernate 5.3.7.Final
+* Spring Security
+* Thymeleaf
+* Swagger-ui/Spring REST Docs
+* Spring Test/JUnit/Mockito
+* Lombok
+* Bootstrap
+
+## Requirements
+
+* JDK 8
+
+  Oracle Java 8 is required, go to [Oracle Java website](http://java.oracle.com) to download it and install into your system. 
+  
+* Apache Maven
+
+  Download the latest Apache Maven from [http://maven.apache.org](http://maven.apache.org), and uncompress it into your local system.
+  
+## Get the source codes
+
+Get a copy of the source codes into your local system.
+
+```
+git clone https://github.com/sineDtS/SayMe
+```
+
+## Run the project
+
+You can use one of the following approaches to run this project.
+
+### Run master branch 
+
+1. Run the backend API server and frontend UI.
+
+   The backend APIs will run on port 8080.
+
+2. Go to [http://localhost:8080](http://localhost:8080) to test it.
+
+After deployment it will be looks like.
+
+![Image alt](https://github.com/sineDtS/SayMe/raw/master/src/main/resources/Main.PNG) 
+
+### Run rest branch
+
+1. Run the backend API server.
+
+   The backend APIs will run on port 8080.
+
+2. If you want to explore the REST API docs online, there is a *Swagger UI* configured for visualizing the REST APIs, just go to [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
+
+After deployment and opened http://localhost:8080/swagger-ui.html it will be looks like.
+
+![Image alt](https://github.com/sineDtS/SayMe/raw/master/src/main/resources/swagger-ui.PNG) 
 
 ---
 
