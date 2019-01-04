@@ -50,7 +50,7 @@ You can use one of the following approaches to run this project.
 
 After deployment it will be looks like.
 
-![alt text](https://github.com/sineDtS/SayMe/tree/master/src/main/resources/Main.PNG) 
+![Image alt](https://github.com/sineDtS/SayMe/raw/master/src/main/resources/Main.PNG) 
 
 ### Run rest branch
 
@@ -62,7 +62,7 @@ After deployment it will be looks like.
 
 After deployment and opened http://localhost:8080/swagger-ui.html it will be looks like.
 
-![alt text](https://github.com/sineDtS/SayMe/master/src/main/resources/swagger-ui.PNG) 
+![Image alt](https://github.com/sineDtS/SayMe/raw/master/src/main/resources/swagger-ui.PNG) 
 
 ---
 
