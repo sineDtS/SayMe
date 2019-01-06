@@ -1,4 +1,4 @@
-## SayMe Messenger
+# SayMe Messenger
 
 An example application using Thymeleaf/Bootstrap as frontend and Spring MVC, Spring Data, Spring Security.
 This project have 2 branches - user representation with help of Thymeleaf and RESTful part with Swagger UI.
@@ -10,7 +10,8 @@ Technology stack:
 * Spring Non-boot application version 5.1.3.RELEASE
 * Spring MVC
 * Spring Data JPA
-* Hibernate 5.3.7.Final
+* Hibernate version 5.3.7.Final
+* PostgreSQL
 * Spring Security
 * Thymeleaf
 * Swagger-ui/Spring REST Docs
@@ -35,6 +36,11 @@ Get a copy of the source codes into your local system.
 ```
 git clone https://github.com/sineDtS/SayMe
 ```
+
+## Create a database
+
+1. Install PostgreSQL into your local system. 
+2. Create a schema and put the data with help of src.main.resources.dumpBD
 
 ## Run the project
 
