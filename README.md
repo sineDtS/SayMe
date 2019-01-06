@@ -11,7 +11,7 @@ Technology stack:
 * Spring MVC
 * Spring Data JPA
 * Hibernate version 5.3.7.Final
-* PostgreSql 
+* PostgreSQL 
 * Spring Security
 * Thymeleaf
 * Swagger-ui/Spring REST Docs
@@ -39,7 +39,7 @@ git clone https://github.com/sineDtS/SayMe
 
 ## Create a database
 
-1. Install postgresql on your local system. 
+1. Install PostgreSQL into your local system. 
 2. Create a schema and put the data with help of src.main.resources.dumpBD
 
 ## Run the project
