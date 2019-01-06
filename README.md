@@ -1,4 +1,4 @@
-## SayMe Messenger
+# SayMe Messenger
 
 An example application using Thymeleaf/Bootstrap as frontend and Spring MVC, Spring Data, Spring Security.
 This project have 2 branches - user representation with help of Thymeleaf and RESTful part with Swagger UI.
